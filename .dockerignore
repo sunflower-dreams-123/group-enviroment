@@ -1,11 +1,6 @@
 .conda/
 __pycache__/
-all-mpnet-base-v2-finetuned-NER/
 fastapideploy.py
-fastapideploylogging.py
-finetunging.ipynb
-pipeline.ipynb
 predictions.log
-testingchanges.py
-testingendpoint.py
 testingendpointnotebook.ipynb
+confusionmatrix.png
