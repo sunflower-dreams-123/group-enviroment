@@ -50,8 +50,8 @@ def process_text(text: str) -> List[Tuple[str, str]]:
     tokens = tokenizer.convert_ids_to_tokens(inputs[0])
     labels = [model.config.id2label[p.item()] for p in predictions[0]]
     converted_list = [label_mapping[item] for item in labels]
-    # Pair tokens with their labels
-    return list(zip(tokens, converted_list))
+    # Pair tokens with their labels and remove the first and last tokens used in model to seperate sentences
+    return list(zip(tokens[1:-1], converted_list[1:-1]))
 
 def log_interaction(user_input: str, results: List[Tuple[str, str]]):
     timestamp = datetime.now().isoformat()
@@ -60,4 +60,4 @@ def log_interaction(user_input: str, results: List[Tuple[str, str]]):
     logging.info(log_entry)
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=80)
+    uvicorn.run(app, port=8000)

@@ -51,7 +51,7 @@ def process_text(text: str) -> List[Tuple[str, str]]:
     labels = [model.config.id2label[p.item()] for p in predictions[0]]
     converted_list = [label_mapping[item] for item in labels]
     # Pair tokens with their labels
-    return list(zip(tokens, converted_list))
+    return list(zip(tokens[1:-1], converted_list[1:-1]))
 
 def log_interaction(user_input: str, results: List[Tuple[str, str]]):
     timestamp = datetime.now().isoformat()
