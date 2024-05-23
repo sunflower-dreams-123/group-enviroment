@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>NER Application</title>
+</head>
+<body style="background-color: grey">
+  <h1>NLP Coursework</h1>
+  <form method="post" >
+    <textarea name="text" rows="5" cols="50" placeholder="Enter text" style="background-color: LightGray"></textarea><br>
+    <input type="submit" value="Test" >
+  </form>
+  {% if results %}
+    <h2>Results:</h2>
+    <ul>
+    {% for word, entity in results %}
+      <li>{{ word }} - <strong>{{ entity }}</strong></li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+</body>
+</html>
