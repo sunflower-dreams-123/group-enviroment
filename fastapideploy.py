@@ -9,6 +9,8 @@ from fastapi.templating import Jinja2Templates
 import logging
 from datetime import datetime
  
+# Running on local machine
+
 # Set the templates folder for website appearance
 templates = Jinja2Templates(directory="templates")
 # Initialize the tokenizer and model

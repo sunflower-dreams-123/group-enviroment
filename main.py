@@ -8,6 +8,9 @@ import uvicorn
 from fastapi.templating import Jinja2Templates
 import logging
 from datetime import datetime
+
+# Code to run on docker container
+
 # Set the templates folder for website appearance
 templates = Jinja2Templates(directory="templates")
 # Initialize the tokenizer and model
