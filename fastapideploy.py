@@ -9,6 +9,7 @@ from fastapi.templating import Jinja2Templates
 import logging
 from datetime import datetime
  
+# Set the templates folder for website appearance
 templates = Jinja2Templates(directory="templates")
 # Initialize the tokenizer and model
 tokenizer = AutoTokenizer.from_pretrained("all-mpnet-base-v2-finetuned-NER", local_files_only=True)
@@ -22,11 +23,12 @@ app = FastAPI()
 # Configure logging
 logging.basicConfig(filename='predictions.log', level=logging.INFO)
 
-
+#Resposnse to show basic text input box
 @app.get("/", response_class=HTMLResponse)
 async def get_form(request: Request):
     return templates.TemplateResponse("ner_template.html", {"request": request, "results": None})
  
+#response when text is posted from website calling process text and logging
 @app.post("/", response_class=HTMLResponse)
 async def post_form(request: Request, text: str = Form(...)):
     results = process_text(text)
@@ -35,6 +37,7 @@ async def post_form(request: Request, text: str = Form(...)):
     #logging.info(f"{datetime.now()} - Input: {results[0]}, Prediction: {results[1]}")
     return templates.TemplateResponse("ner_template.html", {"request": request, "results": results})
  
+# Processes text using the model and tokenizer loaded
 def process_text(text: str) -> List[Tuple[str, str]]:
     # Tokenize the input text and prepare input IDs
     inputs = tokenizer.encode(text, return_tensors="pt")
@@ -50,9 +53,10 @@ def process_text(text: str) -> List[Tuple[str, str]]:
     tokens = tokenizer.convert_ids_to_tokens(inputs[0])
     labels = [model.config.id2label[p.item()] for p in predictions[0]]
     converted_list = [label_mapping[item] for item in labels]
-    # Pair tokens with their labels and remove the first and last tokens used in model to seperate sentences
+    # Pair tokens with their labels
     return list(zip(tokens[1:-1], converted_list[1:-1]))
 
+# Records timestamp, user input, and results for each interaction
 def log_interaction(user_input: str, results: List[Tuple[str, str]]):
     timestamp = datetime.now().isoformat()
     results_str = ", ".join([f"({word}, {entity})" for word, entity in results])

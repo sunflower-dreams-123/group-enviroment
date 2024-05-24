@@ -74,7 +74,7 @@ def turn_dict_to_list_of_dict(d):
 
     return new_list
 
-#use 
+# Turn use function to turn dictionaries into lists of dictionaries
 tokenised_train = turn_dict_to_list_of_dict(tokenized_train_datasets)
 tokenised_val = turn_dict_to_list_of_dict(tokenized_val_datasets)
 tokenised_test = turn_dict_to_list_of_dict(tokenized_test_datasets)
@@ -109,15 +109,12 @@ def compute_metrics(p):
 
 # Training arguments
 model_name = "sentence-transformers/all-mpnet-base-v2"
-#model_name = "thenlper/gte-base"
 epochs = 12
 batch_size = 4
 learning_rate = 6e-5
 
 args = TrainingArguments(
     f"all-mpnet-base-v2-finetuned-NER",
-    #f"thenlper/gte-base-NER",
-    # evaluation_strategy = "epoch", ## Instead of focusing on loss and accuracy, we will focus on the F1 score
     evaluation_strategy ='steps',
     eval_steps = 7000,
     save_total_limit = 3,
@@ -141,13 +138,14 @@ trainer = Trainer(
     compute_metrics=compute_metrics,
     callbacks = [EarlyStoppingCallback(early_stopping_patience=3)]
 )
-
+# Trains model
 trainer.train()
 
 # Prepare the test data for evaluation in the same format as the training data
 predictions, labels, _ = trainer.predict(tokenised_test)
 predictions = np.argmax(predictions, axis=2)
 
+# Process predicitons for use in confusion matrix
 true_labels = []
 true_predictions = []
 true_labels_sep = []
@@ -164,7 +162,7 @@ for i in range(len(labels)):
   true_labels_sep.append(templist)
   true_predictions_sep.append(templist2)
 
-
+# Plot and print confusion matrix to see model is working
 conf_mat = confusion_matrix(true_labels, true_predictions)
 plt.figure(figsize=(10, 8))
 sns.heatmap(conf_mat, annot=True, fmt="d", cmap='Blues', xticklabels=["Other", "Abbreviation","Long Form"], yticklabels=["Other", "Abbreviation","Long Form"])
@@ -173,4 +171,5 @@ plt.ylabel('True Labels')
 plt.title('Fine Tuning')
 plt.savefig('confusionmatrix.png')
 
+# Saves model for use in web server
 trainer.save_model()
